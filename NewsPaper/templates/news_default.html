@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{% extends 'flatpages/default.html' %}</title>
+        {% load profanity %}
+    </head>
+    <body>
+        {% block title %}
+            <h1>
+                news_default
+            </h1>
+        {% endblock title %}
+        {% block content %}
+        <hr>
+            {% if news_default %}
+                <h2>
+                    {{ news_default.title|censor }}
+                </h2>
+                <tr>
+                    <h2>
+                        <td>{{ news_default.author.authorUser }}</td>
+                        <td>{{ news_default.dateCreation|date:"d.M.Y H:i" }}</td>
+                    </h2>
+                </tr>
+                <td>{{ news_default.text|censor }}</td>
+            {% else %}
+                <h2>Новость еще готовится!</h2>
+            {% endif %}
+        {% endblock content %}
+
+    </body>
+</html>

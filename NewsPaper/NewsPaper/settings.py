@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'news',
     'django.contrib.sites',
     'django.contrib.flatpages',
-    'profanity'
+    'profanity',
+    'django_filters',
+
 
 ]
 

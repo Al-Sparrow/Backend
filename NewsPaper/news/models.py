@@ -1,11 +1,15 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.urls import reverse
 
 
 class Author(models.Model):
     authorUser = models.OneToOneField(User, on_delete=models.CASCADE)
     ratingAuthor = models.SmallIntegerField(default=0)
+
+    def __str__(self):
+        return f'{self.authorUser}'
 
     def upgrade_rating(self):
         postRat = self.post_set.aggregate(postRating=Sum('rating'))
@@ -22,6 +26,8 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=64, unique=True)
+    def __str__(self):
+        return f'{self.name}'
 
 
 class Post(models.Model):
@@ -40,8 +46,11 @@ class Post(models.Model):
     text = models.TextField()
     rating = models.SmallIntegerField(default=0)
 
-    #def __str__(self):
-       # return f'{self.title()}:{self.text}'
+    def __str__(self):
+        return f'{self.postCategory}'
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.id)])
 
     def like(self):
         self.rating += 1
@@ -53,6 +62,7 @@ class Post(models.Model):
 
     def preview(self):
         return '{} ... {}'.format(self.text[0:123], str(self.rating))
+
 
 
 class PostCategory(models.Model):
@@ -75,7 +85,11 @@ class Comment(models.Model):
         self.rating -= 1
         self.save()
 
-
+#class PostFilter(django_filters.FilterSet):
+  #  class Meta:
+        #title_filter=django_filters.
+        #category_filter=django_filters.
+        #date_filter=django_filters.
 
 
 

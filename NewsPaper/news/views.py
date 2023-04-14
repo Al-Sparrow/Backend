@@ -1,10 +1,12 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post
-from django.urls import reverse_lazy
+from .models import Post, Comment, User
+from django.urls import reverse_lazy, reverse
 from .filters import PostFilter
 from django.http import HttpResponse
-from .forms import PostForm
+from .forms import PostForm, CommentForm
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+
 from django.views.generic import TemplateView
 
 
@@ -20,7 +22,10 @@ def multiply(request):
    return HttpResponse(html)
 
 
-class PostList(ListView):
+
+
+
+class PostList(LoginRequiredMixin, ListView):
     model = Post
     ordering = 'dateCreation'
     template_name = 'News.html'
@@ -35,8 +40,7 @@ class PostList(ListView):
         return context
 
 
-
-class PostSearch(ListView):
+class PostSearch(LoginRequiredMixin, ListView):
     model = Post
     ordering = 'dateCreation'
     template_name = 'search.html'
@@ -61,8 +65,7 @@ class PostSearch(ListView):
         return context
 
 
-
-class PostDetail(DetailView):
+class PostDetail(LoginRequiredMixin, DetailView):
     model = Post
     template_name = 'news_default.html'
     context_object_name = 'news_default'
@@ -72,29 +75,61 @@ class PostDetail(DetailView):
         return context_detail
 
 
-
-# Создание статьи
-class PostCreate(CreateView):
+class PostCreate(LoginRequiredMixin, CreateView):
 
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
-# Удаление статьи
-class PostUpdate(UpdateView):
+
+class PostUpdate(LoginRequiredMixin, UpdateView):
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
 
-class PostDelete(DeleteView):
+class PostDelete(LoginRequiredMixin, DeleteView):
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
 
 
-class ProtectedView(LoginRequiredMixin, TemplateView):
-    template_name = 'prodected_page.html'
+class CommentPost (LoginRequiredMixin, CreateView):
+    form_class = CommentForm
+    model = Comment
+    template_name = 'comment.html'
 
-# class UserUpdate(UpdateView):
-#     model = Author
+    # def get_success_url(self):
+    #     return reverse('post_detail', args=[str(self.id)])
+
+    def form_valid(self, Form):
+        Form.instance.commentPost_id = Post.objects.get(id=int(self.kwargs['pk'])).id
+        Form.instance.commentUser_id = self.request.user.id
+        return super().form_valid(Form)
+
+
+
+# class CommentList(LoginRequiredMixin, ListView):
+#     model = Comment
+#     template_name = 'news_default.html'
+#     context_object_name = 'comment_post'
+#
+#     def get_context_data(self, **kwargs):
+#         context_detail = super().get_context_data(**kwargs)
+#         return context_detail
+
+
+    # def form_valid(self, form):
+    #     form.instance.commentUser = self.request.user
+    #     form.instance.commentPost = Post.objects.get(id=int(self.kwargs['pk']))
+
+
+
+
+
+
+#
+#     def get_context_data(self, **kwargs):
+#         context_detail = super().get_context_data(**kwargs)
+#         return context_detail
+

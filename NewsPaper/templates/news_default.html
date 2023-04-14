@@ -1,33 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>{% extends 'flatpages/default.html' %}</title>
-        {% load profanity %}
-    </head>
-    <body>
-        {% block title %}
-            <h1>
-                news_default
-            </h1>
-        {% endblock title %}
-        {% block content %}
-        <hr>
-            {% if news_default %}
-                <h2>
-                    {{ news_default.title|censor }}
-                </h2>
-                <tr>
-                    <h2>
-                        <td>{{ news_default.author.authorUser }}</td>
-                        <td>{{ news_default.dateCreation|date:"d.M.Y H:i" }}</td>
-                    </h2>
-                </tr>
-                <td>{{ news_default.text|censor }}</td>
-            {% else %}
-                <h2>Новость еще готовится!</h2>
-            {% endif %}
-        {% endblock content %}
+<head>
+    <meta charset="UTF-8">
+    <title>{% extends 'flatpages/default.html' %}</title>
+    {% load profanity %}
+</head>
 
-    </body>
-</html>
+    {% block title %}
+        <h1>
+            news_default
+        </h1>
+    {% endblock title %}
+    {% block content %}
+    <hr>
+        {% if news_default %}
+            <h2>
+                {{ news_default.title|censor }}
+            </h2>
+            <tr>
+                <h2>
+                    <td>{{ news_default.author.authorUser }}</td>
+                    <td>{{ news_default.dateCreation|date:"d.M.Y H:i" }}</td>
+                </h2>
+            <tr>
+            <td>{{ news_default.text|censor }}</td>
+
+        {% else %}
+            <h2>Новость еще готовится!</h2>
+        {% endif %}
+                <h3>
+                    {% if news_default.comment_set.all %}
+                        <table>
+                            <tr> <!— Добавляем строку —>
+                            <td>Автор</td>
+                            <td>Комментарий</td>
+                            <td>Дата</td>
+
+                            {% for comment in news_default.comment_set.all %}
+                                <tr>
+                                    <td>{{ comment.commentUser.username }}</td>
+                                    <td>{{ comment.text|censor }}</td>
+                                    <td>{{ comment.dateCreation|date:"d.M.Y" }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tr> <!— Не забываем закрыть HTML-тег строки —>
+                        </table>
+                    {% else %}
+                        <h3>Комментариев нет!</h3>
+                    {% endif %}
+                </h3>
+
+    <tr>
+        <td style="text-align: left;"> <a class="nav-link" href="/news/{{news_default.id}}/comment/">Оставить комментарий </a>
+    </tr>
+    {% endblock content %}
+

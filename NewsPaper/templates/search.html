@@ -32,7 +32,7 @@ Search
                             <tr>
                                 <td>{{ post.id }}</td>
                                 <td>{{ post.dateCreation|date:"d.M.Y H:i" }}</td>
-                                <td>{{ post.title|censor }}</td>
+                                <td> <a class="nav-link" href="/news/{{post.id}}">{{ post.title|censor }}  </a></td>
                                 <td>{{ post.text|truncatechars:20 |censor }}</td>
                                 <td>{{ post.author.authorUser }}</td>
                             </tr>

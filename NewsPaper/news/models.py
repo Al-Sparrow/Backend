@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-from django.db.models import Sum
 from django.urls import reverse
+from django.db.models import Sum
 
 
 class Author(models.Model):
@@ -22,6 +22,7 @@ class Author(models.Model):
 
         self.ratingAuthor = pRat * 3 + cRat
         self.save()
+
 
 
 class Category(models.Model):
@@ -77,6 +78,12 @@ class Comment(models.Model):
     dateCreation = models.DateTimeField(auto_now_add=True)
     rating = models.SmallIntegerField(default=0)
 
+    def __str__(self):
+        return f'{self.text}'
+
+    def get_absolute_url(self):
+        return reverse('post_detail', args=[str(self.commentPost.id)])
+
     def like(self):
         self.rating += 1
         self.save()
@@ -85,11 +92,6 @@ class Comment(models.Model):
         self.rating -= 1
         self.save()
 
-#class PostFilter(django_filters.FilterSet):
-  #  class Meta:
-        #title_filter=django_filters.
-        #category_filter=django_filters.
-        #date_filter=django_filters.
 
 
 

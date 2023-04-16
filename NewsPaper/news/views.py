@@ -1,10 +1,10 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Comment, User
+from .models import Post, Comment, User, Author
 from django.urls import reverse_lazy, reverse
 from .filters import PostFilter
 from django.http import HttpResponse
 from .forms import PostForm, CommentForm
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 
 
 from django.views.generic import TemplateView
@@ -75,20 +75,31 @@ class PostDetail(LoginRequiredMixin, DetailView):
         return context_detail
 
 
-class PostCreate(LoginRequiredMixin, CreateView):
+class PostCreate(PermissionRequiredMixin, CreateView):
+    permission_required = ('news.add_post',)
+    raise_exception = True
+    form_class = PostForm
+    model = Post
+    template_name = 'post_edit.html'
 
+    def form_valid(self, Form):
+        # authorUser = self.request.user.objects.get(id=int(self.kwargs['pk']))
+        Form.instance.author = Author.objects.get(authorUser = self.request.user)
+        return super().form_valid(Form)
+
+
+
+class PostUpdate(PermissionRequiredMixin, UpdateView):
+    permission_required = ('news.change_post',)
+    raise_exception = True
     form_class = PostForm
     model = Post
     template_name = 'post_edit.html'
 
 
-class PostUpdate(LoginRequiredMixin, UpdateView):
-    form_class = PostForm
-    model = Post
-    template_name = 'post_edit.html'
-
-
-class PostDelete(LoginRequiredMixin, DeleteView):
+class PostDelete(PermissionRequiredMixin, DeleteView):
+    permission_required = ('news.delete_post',)
+    raise_exception = True
     model = Post
     template_name = 'post_delete.html'
     success_url = reverse_lazy('post_list')
@@ -99,8 +110,6 @@ class CommentPost (LoginRequiredMixin, CreateView):
     model = Comment
     template_name = 'comment.html'
 
-    # def get_success_url(self):
-    #     return reverse('post_detail', args=[str(self.id)])
 
     def form_valid(self, Form):
         Form.instance.commentPost_id = Post.objects.get(id=int(self.kwargs['pk'])).id
@@ -108,28 +117,4 @@ class CommentPost (LoginRequiredMixin, CreateView):
         return super().form_valid(Form)
 
 
-
-# class CommentList(LoginRequiredMixin, ListView):
-#     model = Comment
-#     template_name = 'news_default.html'
-#     context_object_name = 'comment_post'
-#
-#     def get_context_data(self, **kwargs):
-#         context_detail = super().get_context_data(**kwargs)
-#         return context_detail
-
-
-    # def form_valid(self, form):
-    #     form.instance.commentUser = self.request.user
-    #     form.instance.commentPost = Post.objects.get(id=int(self.kwargs['pk']))
-
-
-
-
-
-
-#
-#     def get_context_data(self, **kwargs):
-#         context_detail = super().get_context_data(**kwargs)
-#         return context_detail
 

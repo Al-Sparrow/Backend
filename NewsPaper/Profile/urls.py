@@ -1,8 +1,9 @@
-from django.urls import path
+from django.urls import path, include
 from .views import UserUpdate, upgrade_me, UserInfo
 
 urlpatterns = [
-    path('<int:pk>', UserInfo.as_view(), name='accounts_info'),
-    path('<int:pk>/update_profile/', UserUpdate.as_view(), name = 'accounts_update'),
-    path('<int:pk>/update_profile/upgrade/', upgrade_me, name = 'upgrade'),
+    path('<int:pk>/', include([
+        path('', UserInfo.as_view(), name = 'accounts_info'),
+        path('upgrade/', upgrade_me, name = 'upgrade'),
+        path('update_profile/', UserUpdate.as_view(), name = 'accounts_update')]))
 ]

@@ -7,6 +7,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.contrib.auth.models import Group
+from news.models import Author
 from django.shortcuts import render
 
 
@@ -17,17 +18,18 @@ class UserInfo(LoginRequiredMixin, DetailView):
 
     def get_context_data(self, **kwargs):
         context_profile = super().get_context_data(**kwargs)
-        context_profile['is_not_Author'] = not self.request.user.groups.filter(name='Author').exists()
+        context_profile['is_not_author'] = not self.request.user.groups.filter(name='author').exists()
         return context_profile
 
 
 @login_required
-def upgrade_me(request):
+def upgrade_me(request, *args, **kwargs):
     user = request.user
-    author_group = Group.objects.get(name='Author')
-    if not user.groups.filter(name='Author').exists():
+    author_group = Group.objects.get(name='author')
+    if not user.groups.filter(name='author').exists():
         author_group.user_set.add(user)
-    return redirect('accounts_update')
+        Author.objects.create(authorUser=User)
+    return redirect('http://127.0.0.1:8000/news/')
 
 
 class UserUpdate(LoginRequiredMixin, UpdateView):

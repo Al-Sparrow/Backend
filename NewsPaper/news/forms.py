@@ -8,10 +8,8 @@ class PostForm(forms.ModelForm):
         model = Post
         fields = [
             'title',
-            'author',
             'text',
             'categoryType',
-
         ]
 
     def clean(self):
@@ -30,6 +28,7 @@ class PostForm(forms.ModelForm):
             )
 
         return cleaned_data
+
 
 class CommentForm (forms.ModelForm):
     class Meta:

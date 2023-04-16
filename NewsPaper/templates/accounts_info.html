@@ -6,22 +6,30 @@
 <hr>
     {% if accounts_info %}
             <h3>
-                <tr>
-                    <td>Никнейм : {{ accounts_info.username }}</td>
-                    <td>Имя : {{ accounts_info.first_name }}</td>
-                    <td>Фамилия : {{ accounts_info.last_name }}</td>
-                    <td>Почта : {{ accounts_info.email }}</td>
-                    <td>Дата регистрации : {{ accounts_info.dateCreation|date:"d.M.Y" }}</td>
-                    <td>
-                        Статус : {% if is_not_Author %}
-                                    Не Автор
+                <ul>
+                    <li>Никнейм : {{ accounts_info.username }}</li><br>
+                    <li>Имя : {{ accounts_info.first_name }}</li>
+                    <li>Фамилия : {{ accounts_info.last_name }}</li>
+                    <li>Почта : {{ accounts_info.email }}</li>
+                    <li>Дата регистрации : {{ accounts_info.dateCreation|date:"d.M.Y" }}</li>
+                    <li>
+                        Статус : {% if is_not_author %}
+                                    Читатель
                                  {% else %}
                                     Автор
-                                 {%endif %}
-                    </td>
-                </tr>
+                                 {% endif %}
+                    </li>
+                </ul>
             </h3>
-                <button> <a href="/profile/{{request.user.id}}/update_profile"> Редактировать профиль</a> </button>
+            <hr>
+                <li>
+                    {% if is_not_author %}
+                        <button> <a href="upgrade/"> Хочу стать Автором!</a> </button>
+                    {% endif %}
+                </li>
+            <hr>
+
+            <button> <a href="/profile/{{request.user.id}}/update_profile"> Редактировать профиль</a> </button>
 
             <!— Не забываем закрыть HTML-тег строки —>
 

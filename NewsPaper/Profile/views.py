@@ -28,7 +28,7 @@ def upgrade_me(request, *args, **kwargs):
     author_group = Group.objects.get(name='author')
     if not user.groups.filter(name='author').exists():
         author_group.user_set.add(user)
-        Author.objects.create(authorUser=User)
+        Author.objects.create(authorUser=user)
     return redirect('http://127.0.0.1:8000/news/')
 
 

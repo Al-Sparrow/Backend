@@ -30,15 +30,18 @@ News
                     <td>Статья</td>
                     <td>Текст</td>
                     <td>Автор</td>
+                    <td>Категории</td>
 
                     {% for post in News %}
                         <tr>
                             <td>{{ post.id }}</td>
                             <td>{{ post.dateCreation|date:"d.M.Y" }}</td>
-                            <td>
-                                <a class="nav-link" href="/news/{{post.id}}">{{ post.title|censor }}  </a></td>
+                            <td><a class="nav-link" href="/news/{{post.id}}">{{ post.title|censor }}  </a></td>
                             <td>{{ post.text|truncatechars:20 |censor }}</td>
                             <td>{{ post.author.authorUser }}</td>
+                            {% for cate in post.postCategory.all %}
+                                <td><a class="nav-link" href="{% url 'category_list' cate.id %}">{{ cate.name }}  </a></td>
+                            {% endfor %}
                         </tr>
                     {% endfor %}
                 </tr> <!— Не забываем закрыть HTML-тег строки —>

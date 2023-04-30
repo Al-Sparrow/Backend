@@ -1,11 +1,13 @@
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from .models import Post, Comment, User, Author
+from .models import Post, Comment, User, Author, Category
 from django.urls import reverse_lazy, reverse
 from .filters import PostFilter
 from django.http import HttpResponse
 from .forms import PostForm, CommentForm
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-
+from django.shortcuts import get_object_or_404
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
 from django.views.generic import TemplateView
 
@@ -84,7 +86,7 @@ class PostCreate(PermissionRequiredMixin, CreateView):
 
     def form_valid(self, Form):
         # authorUser = self.request.user.objects.get(id=int(self.kwargs['pk']))
-        Form.instance.author = Author.objects.get(authorUser = self.request.user)
+        Form.instance.author = Author.objects.get(authorUser = self.request.user.id)
         return super().form_valid(Form)
 
 
@@ -117,4 +119,26 @@ class CommentPost (LoginRequiredMixin, CreateView):
         return super().form_valid(Form)
 
 
+class CategoryListView(PostList):
+    model = Post
+    template_name = 'category_list.html'
+    context_object_name = 'category_list'
+    def get_queryset(self):
+        self.category = get_object_or_404(Category, id=self.kwargs['pk'])
+        queryset = Post.objects.filter(postCategory=self.category).order_by('-dateCreation')
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['is_not_subscriber'] = self.request.user not in self.category.subscribe.all()
+        context['category'] = self.category
+        return context
+
+@login_required
+def subscribe(request, pk):
+    user = request.user
+    category = Category.objects.get(id=pk)
+    category.subscribe.add(user)
+    message = "Вы подписаны на новости категории"
+    return render(request, 'subscribe.html', {'category': category, 'message':message})
 

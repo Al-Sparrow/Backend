@@ -53,7 +53,7 @@ class Post(models.Model):
         return f'{self.postCategory}'
 
     def get_absolute_url(self):
-        return f'(news/{self.id}'
+        return reverse(f'post_detail', kwargs={'pk' : self.pk})
 
     def like(self):
         self.rating += 1
@@ -81,6 +81,7 @@ class Comment(models.Model):
     rating = models.SmallIntegerField(default=0)
 
     def __str__(self):
+
         return f'{self.text}'
 
     def get_absolute_url(self):

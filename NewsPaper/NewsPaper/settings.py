@@ -148,10 +148,10 @@ SITE_URL = 'http://127.0.0.1:8000'
 
 EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_POST = 465
-EMAIL_HOST_USER = 'al.grey.sparrow'      #os.getenv('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = ''  #os.getenv('EMAIL_HOST_PASSWORD')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
 EMAIL_USE_SSL = True
-DEFAULT_FROM_EMAIL = 'Chitalka <al.grey.sparrow@yandex.ru>'    #os.getenv('DEFAULT_FROM_EMAIL')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
@@ -175,7 +175,13 @@ ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 ACCOUNT_FORMS = {'signup': 'Profile.forms.BasicSignupForm'}
 
 # формат даты, которую будет воспринимать наш задачник (вспоминаем модуль по фильтрам)
-APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
+# APSCHEDULER_DATETIME_FORMAT = "N j, Y, f:s a"
 
 # если задача не выполняется за 25 секунд, то она автоматически снимается, можете поставить время побольше, но как правило, это сильно бьёт по производительности сервера
-APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+# APSCHEDULER_RUN_NOW_TIMEOUT = 25  # Seconds
+
+CELERY_BROKER_URL=f'redis://default:s32JefZYMkTjRdwOwPEVhOECBqXM6SiL@redis-11815.c44.us-east-1-2.ec2.cloud.redislabs.com:11815'
+CELERY_RESULT_BACKEND=f'redis://default:s32JefZYMkTjRdwOwPEVhOECBqXM6SiL@redis-11815.c44.us-east-1-2.ec2.cloud.redislabs.com:11815'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

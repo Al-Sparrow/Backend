@@ -1,0 +1,2 @@
+1. EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, DEFAULT_FROM_EMAIL, CELERY_BROKER_URL, CELERY_RESULT_BACKEND в файле .env
+2. CELERY_BROKER_URL и CELERY_RESULT_BACKEND строятся по принципу redis://логин:пароль@endpoint:port где логин и пароль взяты из раздела Security, а endpoint:port из раздела General в Configuration Datebase на https://app.redislabs.com/

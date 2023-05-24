@@ -1,0 +1,5 @@
+2023-05-23 23:38:40,009 DEBUG (0.000) 
+            SELECT name, type FROM sqlite_master
+            WHERE type in ('table', 'view') AND NOT name='sqlite_sequence'
+            ORDER BY name; args=None; alias=default C:\Users\user\PycharmProjects\Backend_D_2\venv\lib\site-packages\django\db\backends\utils.py None
+2023-05-23 23:38:40,016 DEBUG (0.000) SELECT "django_migrations"."id", "django_migrations"."app", "django_migrations"."name", "django_migrations"."applied" FROM "django_migrations"; args=(); alias=default C:\Users\user\PycharmProjects\Backend_D_2\venv\lib\site-packages\django\db\backends\utils.py None

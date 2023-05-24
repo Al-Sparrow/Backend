@@ -8,6 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
 
 from django.views.generic import TemplateView
 
@@ -68,13 +69,21 @@ class PostSearch(LoginRequiredMixin, ListView):
 
 
 class PostDetail(LoginRequiredMixin, DetailView):
-    model = Post
     template_name = 'news_default.html'
     context_object_name = 'news_default'
+    queryset = Post.objects.all()
 
-    def get_context_data(self, **kwargs):
-        context_detail = super().get_context_data(**kwargs)
-        return context_detail
+    def get_object(self, *args, **kwargs):
+        obj = cache.get(f'post {self.kwargs["pk"]}', None)
+
+        if not obj:
+            obj = super().get_object(queryset=self.queryset)
+            cache.set(f'post_{self.kwargs["pk"]}', obj)
+        return obj
+
+    # def get_context_data(self, *args, **kwargs):
+    #     context_detail = super().get_context_data(**kwargs)
+    #     return context_detail
 
 
 class PostCreate(PermissionRequiredMixin, CreateView):

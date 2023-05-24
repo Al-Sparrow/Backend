@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 from django.db.models import Sum
+from django.core.cache import cache
 
 
 class Author(models.Model):
@@ -54,6 +55,10 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse(f'post_detail', kwargs={'pk' : self.pk})
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)  # сначала вызываем метод родителя, чтобы объект сохранился
+        cache.delete(f'post_{self.pk}')  # затем удаляем его из кэша, чтобы сбросить его
 
     def like(self):
         self.rating += 1
